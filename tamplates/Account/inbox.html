@@ -1,0 +1,20 @@
+<!-- templates/inbox.html -->
+{% extends 'Account/Base.html' %}
+
+{% block title %}Inbox{% endblock %}
+
+{% block content %}
+    <h2>Inbox</h2>
+    <ul>
+        {% for message in messages %}
+            <li>
+                <a href="{% url 'conversation' message.sender.id %}">{{ message.sender.username }}</a>
+                {% if not message.read %}
+                    <a href="{% url 'mark_as_read' message.id %}">Mark as read</a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>No messages</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

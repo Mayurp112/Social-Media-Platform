@@ -1,0 +1,18 @@
+<!-- templates/conversation.html -->
+{% extends 'Account/Base.html' %}
+
+{% block title %}Conversation with {{ receiver.username }}{% endblock %}
+
+{% block content %}
+    <h2>Conversation with {{ receiver.username }}</h2>
+    <ul>
+        {% for message in messages %}
+            <li>{{ message.sender.username }}: {{ message.message }}</li>
+        {% endfor %}
+    </ul>
+    <form method="post" action="{% url 'send_message' receiver.id %}">
+        {% csrf_token %}
+        <textarea name="message"></textarea>
+        <button type="submit">Send</button>
+    </form>
+{% endblock %}

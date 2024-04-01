@@ -12,7 +12,11 @@
         <h1>Social Media Platform</h1>
         <nav>
             {% if user.is_authenticated %}
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'create_post' %}">Add Post</a>
                 <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'inbox' %}">Message</a>
+                <a href="{% url 'notifications' %}">Notification</a>
                 <a href="{% url 'logout' %}">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
