@@ -1,0 +1,13 @@
+<!-- templates/home.html -->
+{% extends 'Account/Base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <h2>Recent Posts</h2>
+    <ul>
+        {% for post in posts %}
+            <li>{{ post.text }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
