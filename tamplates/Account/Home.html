@@ -5,12 +5,12 @@
 
 {% block content %}
     <div class="container mt-3">
-        <h2>Recent Posts</h2>
-        <div class="row row-cols-4 row-cols-md-2 g-4">
+        <h2> Enjoy Your Day With Trend...</h2>
+        <div class="row row-cols-4 row-cols-md-2 g-4 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
             {% for post in posts %}
-            <div class="col">
+            <div class="col shadow-lg p-3 mb-5 bg-body-tertiary rounded">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body bg-primary-subtle">
 
                         <b><p class="card-text">@{{ post.user }}</p></b>
                         <p>{{post.created_at}}</p>
@@ -24,9 +24,10 @@
                             Your browser does not support the video tag.
                         </video>
                         {% endif %}
-                        <form method="post" action="{% url 'like_post' post.id %}">
+                        
+                        <form method="post" action="{% url 'like_post' post.id %}" class="mt-2 mb-2">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-primary"> {{ post.likes.count }} Like</button>
+                            <button type="submit" class="btn btn-primary "> {{ post.likes.count }} Like</button>
                         </form>
                         
                         <ul class="list-group list-group-flush">

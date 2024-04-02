@@ -9,13 +9,15 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="card-title">{{ user.username }}'s Profile</h2>
-                    {% if user.profile_picture %}
-                    <img src="{{ user.profile_picture.url }}" alt="Profile Picture">
-                    {% endif %}
-                    <p>Email: {{ user.email }}</p>
+                    <h4 class="card-title"> <b>USERNAME : @{{ user.username }}</b></h4>
                     
-                    <a href="{% url 'update_profile' %}">Update Profile</a>
+                    <h4>Email: {{ user.email }}</h4>
+                    {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="figure-img img-fluid rounded">
+                    {% endif %}
+                    
+                    <button><a href="{% url 'update_profile' %}">Update Profile</a></button>
+                    <br>
                     <ul class="list-group">
                         <li class="list-group-item"><a href="#" id="show_posts">Posts</a>  {{user.post_set.all.count}}</li>
                         <li class="list-group-item"><a href="#" id="show_following">Following</a> {{user.following.all.count}}</li>
