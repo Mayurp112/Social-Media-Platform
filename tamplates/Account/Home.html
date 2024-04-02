@@ -4,42 +4,49 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<a href="{% url 'user_search' %}">Search</a></h2>
-    <h2>Recent Posts</h2>
-    <ul>
-        {% for post in posts %}
-            <li>
-                <p>{{ post.text }}</p>
-                {% if post.image %}
-                    <img src="{{ post.image.url }}" alt="Post Image">
-                {% endif %}
-                {% if post.video %}
-                    <video controls>
-                        <source src="{{ post.video.url }}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                {% endif %}
-                <form method="post" action="{% url 'like_post' post.id %}">
-                    {% csrf_token %}
-                    <button type="submit">Like</button>
-                </form>
-                <p>Likes: {{ post.likes.count }}</p>
-                <ul>
-                    {% for comment in post.comments.all %}
-                        <li>{{ comment.user.username }}: {{ comment.text }}</li>
-                    {% empty %}
-                        <li>No comments yet.</li>
-                    {% endfor %}
-                </ul>
-                <form method="post" action="{% url 'comment_post' post.id %}">
-                    {% csrf_token %}
-                    {{ comment_form.as_p }}
-                    <button type="submit">Comment</button>
-                </form>
-            </li>
-        {% empty %}
-            <li>No posts found.</li>
-        {% endfor %}
-    </ul>
+    <div class="container mt-3">
+        <h2>Recent Posts</h2>
+        <div class="row row-cols-4 row-cols-md-2 g-4">
+            {% for post in posts %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
 
+                        <b><p class="card-text">@{{ post.user }}</p></b>
+                        <p>{{post.created_at}}</p>
+                        <b><p class="card-text">{{ post.text }}...</p></b>
+                        {% if post.image %}
+                        <img src="{{ post.image.url }}" class="card-img-top" alt="Post Image">
+                        {% endif %}
+                        {% if post.video %}
+                        <video controls class="card-img-top">
+                            <source src="{{ post.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        {% endif %}
+                        <form method="post" action="{% url 'like_post' post.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary"> {{ post.likes.count }} Like</button>
+                        </form>
+                        
+                        <ul class="list-group list-group-flush">
+                            {% for comment in post.comments.all %}
+                            <li class="list-group-item">@{{ comment.user.username }}: {{ comment.text }}</li>
+                            {% empty %}
+                            <li class="list-group-item">No comments yet.</li>
+                            {% endfor %}
+                        </ul>
+                        <form method="post" action="{% url 'comment_post' post.id %}">
+                            {% csrf_token %}
+                            {{ comment_form.as_p }}
+                            <button type="submit" class="btn btn-primary mt-2">Comment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No posts found.</p>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

@@ -4,17 +4,27 @@
 {% block title %}Inbox{% endblock %}
 
 {% block content %}
-    <h2>Inbox</h2>
-    <ul>
-        {% for message in messages %}
-            <li>
-                <a href="{% url 'conversation' message.sender.id %}">{{ message.sender.username }}</a>
-                {% if not message.read %}
-                    <a href="{% url 'mark_as_read' message.id %}">Mark as read</a>
-                {% endif %}
-            </li>
-        {% empty %}
-            <li>No messages</li>
-        {% endfor %}
-    </ul>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Inbox</h2>
+                    <ul class="list-group">
+                        {% for message in messages %}
+                        <li class="list-group-item {% if not message.read %}font-weight-bold{% endif %}">
+                            <a href="{% url 'conversation' message.sender.id %}" class="text-decoration-none">{{ message.sender.username }}</a>
+                            {% if not message.read %}
+                            <a href="{% url 'mark_as_read' message.id %}" class="btn btn-sm btn-primary ms-2">Mark as read</a>
+                            {% endif %}
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item">No messages</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

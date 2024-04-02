@@ -4,10 +4,31 @@
 {% block title %}Create Post{% endblock %}
 
 {% block content %}
-    <h2>Create Post</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Post</button>
-    </form>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Create Post</h2>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="text" class="form-label">Text:</label>
+                            <textarea id="text" name="text" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Image:</label>
+                            <input type="file" id="image" name="image" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="video" class="form-label">Video:</label>
+                            <input type="file" id="video" name="video" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Post</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

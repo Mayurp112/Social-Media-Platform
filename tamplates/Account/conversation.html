@@ -4,15 +4,27 @@
 {% block title %}Conversation with {{ receiver.username }}{% endblock %}
 
 {% block content %}
-    <h2>Conversation with {{ receiver.username }}</h2>
-    <ul>
-        {% for message in messages %}
-            <li>{{ message.sender.username }}: {{ message.message }}</li>
-        {% endfor %}
-    </ul>
-    <form method="post" action="{% url 'send_message' receiver.id %}">
-        {% csrf_token %}
-        <textarea name="message"></textarea>
-        <button type="submit">Send</button>
-    </form>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Conversation with {{ receiver.username }}</h2>
+                    <ul class="list-group">
+                        {% for message in messages %}
+                        <li class="list-group-item">{{ message.sender.username }}: {{ message.message }}</li>
+                        {% endfor %}
+                    </ul>
+                    <form method="post" action="{% url 'send_message' receiver.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <textarea name="message" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

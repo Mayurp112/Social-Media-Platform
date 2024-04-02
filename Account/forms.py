@@ -8,7 +8,7 @@ class PostForm(forms.ModelForm):
         fields = ['text', 'image', 'video']
 
 class CommentForm(forms.Form):
-    text = forms.CharField(widget=forms.Textarea)
+    text = forms.CharField(widget=forms.TextInput)
 
 class LikeForm(forms.Form):
     pass

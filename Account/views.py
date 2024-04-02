@@ -16,6 +16,11 @@ from django.contrib.auth.decorators import login_required
 from .models import Post, Comment,Message
 from .forms import CommentForm, LikeForm
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from django.http import JsonResponse
+
+
 
 
 
@@ -30,8 +35,12 @@ def home_view(request):
     return render(request, 'Account/Home.html', {'posts': posts, 'comment_form': comment_form})
 
 @login_required
-def profile_view(request):
-    return render(request, 'Account/Profile.html', {'user': request.user})
+def profile_view(request, user_id):
+    # Retrieve the user object using the user_id
+    user = User.objects.get(id=user_id)
+    context = {'user': user}
+    return render(request, 'Account/Profile.html', context)
+
 
 @login_required
 def update_profile_view(request):
@@ -40,17 +49,15 @@ def update_profile_view(request):
         request.user.email = request.POST.get('email', '')
         request.user.profile_picture = request.FILES.get('profile_picture')
         request.user.save()
-        return redirect(reverse('profile'))
+        return redirect(reverse('profile', kwargs={'user_id': request.user.id}))
+
     return render(request, 'Account/update_profile.html', {'user': request.user})
 
 @login_required
 def user_search_view(request):
     query = request.GET.get('q', '')
-    if query:
-        users = User.objects.filter(username__icontains=query)
-    else:
-        users = User.objects.all()
-    return render(request, 'Account/user_search.html', {'users': users, 'query': query})
+    users = User.objects.filter(username__icontains=query)
+    return render(request, 'Account/user_search.html', {'query': query, 'users': users})
 
 
 
@@ -138,8 +145,9 @@ def unfollow_user(request, user_id):
 
 
 @login_required
-def notifications_view(request):
-    notifications = request.user.notifications.all()
+def notification_view(request):
+    notifications = request.user.get_notifications()
+    print(notifications)
     return render(request, 'Account/notifications.html', {'notifications': notifications})
 
 @login_required
@@ -176,3 +184,14 @@ def mark_as_read(request, message_id):
     message.read = True
     message.save()
     return redirect('inbox')
+
+#def send_message(request, user_id):
+##   channel_layer = get_channel_layer()
+#    async_to_sync(channel_layer.group_send)(
+#        f'user_{user_id}_messages',
+#        {
+#            'type': 'notify_message',
+#            'message': 'New message'
+#        }
+#    )
+#    return JsonResponse({'success': True})

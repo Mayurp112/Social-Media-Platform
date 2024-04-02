@@ -2,85 +2,114 @@
 {% extends 'Account/Base.html' %}
 
 {% block title %}Profile{% endblock %}
-<hr>
+
 {% block content %}
-    <h2>{{ user.username }}'s Profile</h2>
-    {% if user.profile_picture %}
-        <img src="{{ user.profile_picture.url }}" alt="Profile Picture">
-    {% endif %}
-    <p>Email: {{ user.email }}</p>
-    
-    <h3>Options</h3>
-    <ul>
-        <li><a href="#" id="show_posts">Posts</a>  {{user.post_set.all.count}}</li>
-        <li><a href="#" id="show_following">Following</a>{{user.following.all.count}}</li>
-        <li><a href="#" id="show_followers">Followers</a>{{user.followers.all.count}}</li>
-    </ul>
-
-    <div id="posts" style="display: none;">
-        <h3>Posts</h3>
-        <ul>
-            {% for post in user.post_set.all %}
-                <li>
-                    <p>{{ post.text }}</p>
-                    {% if post.image %}
-                        <img src="{{ post.image.url }}" alt="Post Image">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">{{ user.username }}'s Profile</h2>
+                    {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="Profile Picture">
                     {% endif %}
-                    {% if post.video %}
-                        <video controls>
-                            <source src="{{ post.video.url }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    {% endif %}
-                </li>
-            {% empty %}
-                <li>No posts yet.</li>
-            {% endfor %}
-        </ul>
+                    <p>Email: {{ user.email }}</p>
+                    
+                    <a href="{% url 'update_profile' %}">Update Profile</a>
+                    <ul class="list-group">
+                        <li class="list-group-item"><a href="#" id="show_posts">Posts</a>  {{user.post_set.all.count}}</li>
+                        <li class="list-group-item"><a href="#" id="show_following">Following</a> {{user.following.all.count}}</li>
+                        <li class="list-group-item"><a href="#" id="show_followers">Followers</a> {{user.followers.all.count}}</li>
+                        {% if request.user != user %}
+                            <li class="list-group-item">
+                                {% if request.user not in user.followers.all %}
+                                    <form method="post" action="{% url 'follow_user' user.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary">Follow</button>
+                                    </form>
+                                {% else %}
+                                    <form method="post" action="{% url 'unfollow_user' user.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Unfollow</button>
+                                    </form>
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                        
+                    </ul>
+
+                    <div id="posts" style="display: none;">
+                        <h3>Posts</h3>
+                        <ul class="list-group">
+                            {% for post in user.post_set.all %}
+                            <li class="list-group-item">
+                                <p>{{ post.text }}</p>
+                                {% if post.image %}
+                                <img src="{{ post.image.url }}" alt="Post Image">
+                                {% endif %}
+                                {% if post.video %}
+                                <video controls>
+                                    <source src="{{ post.video.url }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                {% endif %}
+                            </li>
+                            {% empty %}
+                            <li class="list-group-item">No posts yet.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div id="following" style="display: none;">
+                        <h3>Following</h3>
+                        <ul class="list-group">
+                            {% for following_user in user.following.all %}
+                            <li class="list-group-item">{{ following_user.username }}</li>
+                            {% empty %}
+                            <li class="list-group-item">Not following anyone yet.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div id="followers" style="display: none;">
+                        <h3>Followers</h3>
+                        <ul class="list-group">
+                            {% for follower in user.followers.all %}
+                            <li class="list-group-item">{{ follower.username }}</li>
+                            {% empty %}
+                            <li class="list-group-item">No followers yet.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <script>
+                        document.getElementById('show_posts').addEventListener('click', function(e) {
+                            e.preventDefault();
+                            document.getElementById('posts').style.display = 'block';
+                            document.getElementById('following').style.display = 'none';
+                            document.getElementById('followers').style.display = 'none';
+                        });
+
+                        document.getElementById('show_following').addEventListener('click', function(e) {
+                            e.preventDefault();
+                            document.getElementById('posts').style.display = 'none';
+                            document.getElementById('following').style.display = 'block';
+                            document.getElementById('followers').style.display = 'none';
+                        });
+
+                        document.getElementById('show_followers').addEventListener('click', function(e) {
+                            e.preventDefault();
+                            document.getElementById('posts').style.display = 'none';
+                            document.getElementById('following').style.display = 'none';
+                            document.getElementById('followers').style.display = 'block';
+                        });
+
+
+
+                    </script>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div id="following" style="display: none;">
-        <h3>Following</h3>
-        <ul>
-            {% for following_user in user.following.all %}
-                <li>{{ following_user.username }}</li>
-            {% empty %}
-                <li>Not following anyone yet.</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div id="followers" style="display: none;">
-        <h3>Followers</h3>
-        <ul>
-            {% for follower in user.followers.all %}
-                <li>{{ follower.username }}</li>
-            {% empty %}
-                <li>No followers yet.</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <script>
-        document.getElementById('show_posts').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('posts').style.display = 'block';
-            document.getElementById('following').style.display = 'none';
-            document.getElementById('followers').style.display = 'none';
-        });
-
-        document.getElementById('show_following').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('posts').style.display = 'none';
-            document.getElementById('following').style.display = 'block';
-            document.getElementById('followers').style.display = 'none';
-        });
-
-        document.getElementById('show_followers').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('posts').style.display = 'none';
-            document.getElementById('following').style.display = 'none';
-            document.getElementById('followers').style.display = 'block';
-        });
-    </script>
+</div>
 {% endblock %}
